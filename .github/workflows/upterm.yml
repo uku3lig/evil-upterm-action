@@ -11,20 +11,39 @@ on:
           - "ubuntu-latest"
           - "ubuntu-24.04-arm"
           - "macos-latest"
+      reclaim_space:
+        description: "Free up space"
+        required: true
+        type: boolean
+        default: true
+      terminfos:
+        description: "Additional terminfos"
+        required: false
+        type: string
+        default: "ghostty,alacritty"
 
 jobs:
   upterm:
     runs-on: ${{ inputs.image }}
 
     steps:
+      - uses: actions/checkout@v6
+
       - name: Reclaim space (Linux)
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && inputs.reclaim_space
         uses: wimpysworld/nothing-but-nix@main
         with:
           hatchet-protocol: "carve"
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
+
+      - name: Install terminfos
+        if: inputs.terminfos != ''
+        run: |
+          out_path=$(nix build --no-link --print-out-paths -f terminfo.nix --argstr terminfos ${{ inputs.terminfos }})
+          rm -rf /usr/share/terminfo
+          cp -r "$out_path/share/terminfo" /usr/share/terminfo
 
       - name: Setup upterm session
         uses: owenthereal/action-upterm@v1
