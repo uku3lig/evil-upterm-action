@@ -20,6 +20,8 @@ jobs:
       - name: Reclaim space (Linux)
         if: runner.os == 'Linux'
         uses: wimpysworld/nothing-but-nix@main
+        with:
+          hatchet-protocol: "carve"
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
