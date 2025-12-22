@@ -39,7 +39,7 @@ jobs:
         uses: cachix/install-nix-action@v31
 
       - name: Install terminfos
-        if: inputs.terminfos != ''
+        if: inputs.terminfos != '' && runner.os == 'Linux'
         run: |
           out_path=$(nix build --no-link --print-out-paths -f terminfo.nix --argstr terminfos ${{ inputs.terminfos }})
           rm -rf /usr/share/terminfo
