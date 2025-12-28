@@ -21,6 +21,11 @@ on:
         required: false
         type: string
         default: "ghostty,alacritty"
+      tailscale:
+        description: "Add the device to a tailnet"
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   upterm:
@@ -44,6 +49,12 @@ jobs:
           out_path=$(nix build --no-link --print-out-paths -f terminfo.nix --argstr terminfos ${{ inputs.terminfos }})
           rm -rf /usr/share/terminfo
           cp -r "$out_path/share/terminfo" /usr/share/terminfo
+
+      - name: Add to tailnet
+        if: inputs.tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
 
       - name: Setup upterm session
         uses: owenthereal/action-upterm@v1
