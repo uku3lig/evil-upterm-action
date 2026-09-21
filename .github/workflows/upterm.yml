@@ -11,6 +11,7 @@ on:
           - "ubuntu-latest"
           - "ubuntu-24.04-arm"
           - "macos-latest"
+          - "windows-latest"
       reclaim_space:
         description: "Free up space"
         required: true
@@ -41,6 +42,7 @@ jobs:
           hatchet-protocol: "carve"
 
       - name: Install Nix
+        if: runner.os != 'Windows'
         uses: cachix/install-nix-action@v31
 
       - name: Install terminfos
