@@ -61,5 +61,4 @@ jobs:
       - name: Setup upterm session
         uses: owenthereal/action-upterm@v1
         with:
-          upterm-version: v0.29.0
           limit-access-to-actor: true
